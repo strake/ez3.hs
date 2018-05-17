@@ -15,6 +15,7 @@ cabal-version:       >=1.10
 library
   hs-source-dirs:      .
   exposed-modules:     Z3.Tagged
+                     , Z3.Tagged.Eval
   build-depends:       base >= 4.7 && < 5
                      , transformers
                      , z3 >=4.3 && <4.4
