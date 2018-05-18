@@ -53,6 +53,7 @@ module Z3.Tagged
   , mkIntSort
   , mkRealSort
   , mkBvSort
+  , mkFiniteDomainSort
   , mkArraySort
   , mkTupleSort
   , mkConstructor
@@ -589,6 +590,10 @@ mkRealSort = liftF0 Base.mkRealSort
 -- Reference: <http://research.microsoft.com/en-us/um/redmond/projects/Z3 s/group__capi.html#gaeed000a1bbb84b6ca6fdaac6cf0c1688>
 mkBvSort :: ∀ i s . Integral i => i -> Z3 s (Sort s)
 mkBvSort = liftF1 (Base.mkBvSort :: _ -> i -> _)
+
+-- | Create a finite domain type.
+mkFiniteDomainSort :: Symbol s -> Word64 -> Z3 s (Sort s)
+mkFiniteDomainSort = liftF2 Base.mkFiniteDomainSort
 
 -- | Create an array type
 --
