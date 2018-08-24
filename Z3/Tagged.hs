@@ -405,6 +405,7 @@ import Control.Monad.Trans.Reader ( ReaderT (..) )
 import Data.Coerce ( Coercible, coerce )
 import Data.Fixed ( Fixed, HasResolution )
 import Data.Int ( Int64 )
+import Data.List.NonEmpty ( NonEmpty (..) )
 import Data.Kind ( Type )
 import qualified Data.Traversable as T
 import Data.Word ( Word, Word64 )
@@ -768,7 +769,7 @@ mkEq = liftF2 Base.mkEq
 -- distinct.
 --
 -- Reference: <http://research.microsoft.com/en-us/um/redmond/projects/Z3 s/group__capi.html#gaa076d3a668e0ec97d61744403153ecf7>
-mkDistinct :: [AST s] -> Z3 s (AST s)
+mkDistinct :: NonEmpty (AST s) -> Z3 s (AST s)
 mkDistinct = liftF1 Base.mkDistinct
 
 -- | Create an (AST s) node representing /not(a)/.
@@ -838,7 +839,7 @@ mkMul = liftF1 Base.mkMul
 -- | Create an (AST s) node representing args[0] - ... - args[num_args - 1].
 --
 -- Reference: <http://research.microsoft.com/en-us/um/redmond/projects/Z3 s/group__capi.html#ga4f5fea9b683f9e674fd8f14d676cc9a9>
-mkSub :: [AST s] -> Z3 s (AST s)
+mkSub :: NonEmpty (AST s) -> Z3 s (AST s)
 mkSub = liftF1 Base.mkSub
 
 -- | Create an (AST s) node representing -arg.
