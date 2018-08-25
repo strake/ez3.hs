@@ -2088,11 +2088,7 @@ pop n = do
 --
 -- This is a shorthand for 'push', run the query, and 'pop'.
 local :: Z3 s a -> Z3 s a
-local q = do
-  push
-  r <- q
-  pop 1
-  return r
+local q = push *> q <* pop 1
 
 -- | Backtrack all the way.
 reset :: Z3 s ()
