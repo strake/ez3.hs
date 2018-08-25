@@ -14,7 +14,6 @@ module Z3.Tagged
   , Z3Env
   , newEnv
   , newItpEnv
-  , evalZ3WithEnv
 
   -- * Types
   , Symbol
@@ -397,7 +396,6 @@ import Z3.Base
 
 import qualified Z3.Base as Base
 
-import Control.Monad.Fix ( MonadFix )
 import Control.Monad.ST
 import Control.Monad.ST.Unsafe
 import Control.Monad.Trans.Class ( lift )
@@ -413,68 +411,67 @@ import Foreign.Storable
 
 liftF0 :: (Coercible a' a)
        => (Base.Context -> IO a') -> Z3 s a
-liftF0 f = Z3 . ReaderT $ \ (Z3Env {..}) -> unsafeIOToST $ coerce f context
+liftF0 f = ReaderT $ \ (Z3Env {..}) -> unsafeIOToST $ coerce f context
 
 liftF1 :: (Coercible a' a, Coercible b' b)
        => (Base.Context -> a' -> IO b') -> a -> Z3 s b
-liftF1 f a = Z3 . ReaderT $ \ (Z3Env {..}) -> unsafeIOToST $ coerce f context a
+liftF1 f a = ReaderT $ \ (Z3Env {..}) -> unsafeIOToST $ coerce f context a
 
 liftF2 :: (Coercible a' a, Coercible b' b, Coercible c' c)
        => (Base.Context -> a' -> b' -> IO c') -> a -> b -> Z3 s c
-liftF2 f a b = Z3 . ReaderT $ \ (Z3Env {..}) -> unsafeIOToST $ coerce f context a b
+liftF2 f a b = ReaderT $ \ (Z3Env {..}) -> unsafeIOToST $ coerce f context a b
 
 liftF3 :: (Coercible a' a, Coercible b' b, Coercible c' c, Coercible d' d)
        => (Base.Context -> a' -> b' -> c' -> IO d') -> a -> b -> c -> Z3 s d
-liftF3 f a b c = Z3 . ReaderT $ \ (Z3Env {..}) -> unsafeIOToST $ coerce f context a b c
+liftF3 f a b c = ReaderT $ \ (Z3Env {..}) -> unsafeIOToST $ coerce f context a b c
 
 liftF4 :: (Coercible a' a, Coercible b' b, Coercible c' c, Coercible d' d, Coercible e' e)
        => (Base.Context -> a' -> b' -> c' -> d' -> IO e') -> a -> b -> c -> d -> Z3 s e
-liftF4 f a b c d = Z3 . ReaderT $ \ (Z3Env {..}) -> unsafeIOToST $ coerce f context a b c d
+liftF4 f a b c d = ReaderT $ \ (Z3Env {..}) -> unsafeIOToST $ coerce f context a b c d
 
 liftF5 :: (Coercible a' a, Coercible b' b, Coercible c' c, Coercible d' d, Coercible e' e, Coercible f' f)
        => (Base.Context -> a' -> b' -> c' -> d' -> e' -> IO f') -> a -> b -> c -> d -> e -> Z3 s f
-liftF5 f a b c d e = Z3 . ReaderT $ \ (Z3Env {..}) -> unsafeIOToST $ coerce f context a b c d e
+liftF5 f a b c d e = ReaderT $ \ (Z3Env {..}) -> unsafeIOToST $ coerce f context a b c d e
 
 liftF6 :: (Coercible a' a, Coercible b' b, Coercible c' c, Coercible d' d, Coercible e' e, Coercible f' f, Coercible g' g)
        => (Base.Context -> a' -> b' -> c' -> d' -> e' -> f' -> IO g') -> a -> b -> c -> d -> e -> f -> Z3 s g
-liftF6 φ a b c d e f = Z3 . ReaderT $ \ (Z3Env {..}) -> unsafeIOToST $ coerce φ context a b c d e f
+liftF6 φ a b c d e f = ReaderT $ \ (Z3Env {..}) -> unsafeIOToST $ coerce φ context a b c d e f
 
 liftSolver0 :: (Coercible a' a)
             => (Base.Context -> Base.Solver -> IO a') -> Z3 s a
-liftSolver0 f = Z3 . ReaderT $ \ (Z3Env {..}) -> unsafeIOToST $ coerce f context solver
+liftSolver0 f = ReaderT $ \ (Z3Env {..}) -> unsafeIOToST $ coerce f context solver
 
 liftSolver1 :: (Coercible a' a, Coercible b' b)
             => (Base.Context -> Base.Solver -> a' -> IO b') -> a -> Z3 s b
-liftSolver1 f a = Z3 . ReaderT $ \ (Z3Env {..}) -> unsafeIOToST $ coerce f context solver a
+liftSolver1 f a = ReaderT $ \ (Z3Env {..}) -> unsafeIOToST $ coerce f context solver a
 
 liftSolver2 :: (Coercible a' a, Coercible b' b, Coercible c' c)
             => (Base.Context -> Base.Solver -> a' -> b' -> IO c') -> a -> b -> Z3 s c
-liftSolver2 f a b = Z3 . ReaderT $ \ (Z3Env {..}) -> unsafeIOToST $ coerce f context solver a b
+liftSolver2 f a b = ReaderT $ \ (Z3Env {..}) -> unsafeIOToST $ coerce f context solver a b
 
 liftFixedpoint0 :: (Coercible a' a)
                 => (Base.Context -> Base.Fixedpoint -> IO a') -> Z3 s a
-liftFixedpoint0 f = Z3 . ReaderT $ \ (Z3Env {..}) -> unsafeIOToST $ coerce f context fixedpoint
+liftFixedpoint0 f = ReaderT $ \ (Z3Env {..}) -> unsafeIOToST $ coerce f context fixedpoint
 
 liftFixedpoint1 :: (Coercible a' a, Coercible b' b)
                 => (Base.Context -> Base.Fixedpoint -> a' -> IO b') -> a -> Z3 s b
-liftFixedpoint1 f a = Z3 . ReaderT $ \ (Z3Env {..}) -> unsafeIOToST $ coerce f context fixedpoint a
+liftFixedpoint1 f a = ReaderT $ \ (Z3Env {..}) -> unsafeIOToST $ coerce f context fixedpoint a
 
 liftFixedpoint2 :: (Coercible a' a, Coercible b' b, Coercible c' c)
                 => (Base.Context -> Base.Fixedpoint -> a' -> b' -> IO c') -> a -> b -> Z3 s c
-liftFixedpoint2 f a b = Z3 . ReaderT $ \ (Z3Env {..}) -> unsafeIOToST $ coerce f context fixedpoint a b
+liftFixedpoint2 f a b = ReaderT $ \ (Z3Env {..}) -> unsafeIOToST $ coerce f context fixedpoint a b
 
 -------------------------------------------------
 -- A simple Z3 monad.
 
-newtype Z3 s a = Z3 { _unZ3 :: ReaderT (Z3Env s) (ST s) a }
-    deriving (Functor, Applicative, Monad, MonadFix)
+type Z3 s = ReaderT (Z3Env s) (ST s)
 
 -- | Z3 environment.
 data Z3Env s = Z3Env { solver :: Solver s, context :: Context s, fixedpoint :: Fixedpoint s }
 
 -- | Eval a Z3 script.
 evalZ3With :: Maybe Logic -> Opts -> Z3 s a -> ST s a
-evalZ3With mbLogic opts (Z3 (ReaderT a)) = a =<< newEnv mbLogic opts
+evalZ3With mbLogic opts (ReaderT a) = a =<< newEnv mbLogic opts
 
 -- | Eval a Z3 script with default configuration options.
 evalZ3 :: Z3 s a -> ST s a
@@ -496,19 +493,6 @@ newEnv = newEnvWith Base.mkContext
 
 newItpEnv :: Maybe Logic -> Opts -> ST s (Z3Env s)
 newItpEnv = newEnvWith Base.mkInterpolationContext
-
--- | Eval a Z3 script with a given environment.
---
--- Environments may facilitate running many queries under the same
--- logical context.
---
--- Note that an environment may change after each query.
--- If you want to preserve the same environment then use 'local', as in
--- @evalZ3WithEnv /env/ (local /query/)@.
-evalZ3WithEnv :: Z3 s a
-              -> Z3Env s
-              -> ST s a
-evalZ3WithEnv (Z3 s) = runReaderT s
 
 ---------------------------------------------------------------------
 -- * Parameters
@@ -1751,28 +1735,28 @@ showModel = modelToString
 --
 -- Evaluation may fail (i.e. return 'Nothing') for a few
 -- reasons, see 'modelEval'.
-type EvalAst m s a = Model s -> AST s -> m s (Maybe a)
+type EvalAst s a = Model s -> AST s -> Z3 s (Maybe a)
 
 -- | An alias for 'modelEval' with model completion enabled.
-eval :: EvalAst Z3 s (AST s)
+eval :: EvalAst s (AST s)
 eval = liftF2 Base.eval
 
 -- | Evaluate an (AST s) node of sort /bool/ in the given model.
 --
 -- See 'modelEval' and 'getBool'.
-evalBool :: EvalAst Z3 s Bool
+evalBool :: EvalAst s Bool
 evalBool = liftF2 Base.evalBool
 
 -- | Evaluate an (AST s) node of sort /int/ in the given model.
 --
 -- See 'modelEval' and 'getInt'.
-evalInt :: EvalAst Z3 s Integer
+evalInt :: EvalAst s Integer
 evalInt = liftF2 Base.evalInt
 
 -- | Evaluate an (AST s) node of sort /real/ in the given model.
 --
 -- See 'modelEval' and 'getReal'.
-evalReal :: EvalAst Z3 s Rational
+evalReal :: EvalAst s Rational
 evalReal = liftF2 Base.evalReal
 
 -- | Evaluate an (AST s) node of sort /bit-vector/ in the given model.
@@ -1782,12 +1766,12 @@ evalReal = liftF2 Base.evalReal
 --
 -- See 'modelEval' and 'getBv'.
 evalBv :: Bool -- ^ signed?
-                     -> EvalAst Z3 s Integer
+                     -> EvalAst s Integer
 evalBv = liftF3 Base.evalBv
 
 -- | Evaluate a collection of (AST s) nodes in the given model.
 evalT :: ∀ t s . (Traversable t) => Model s -> t (AST s) -> Z3 s (Maybe (t (AST s)))
-evalT model asts = (fmap . fmap . fmap) coerce . Z3 . ReaderT $ \ (Z3Env {..}) -> unsafeIOToST $ Base.evalT (coerce context) (coerce model) (coerce <$> asts)
+evalT model asts = (fmap . fmap . fmap) coerce . ReaderT $ \ (Z3Env {..}) -> unsafeIOToST $ Base.evalT (coerce context) (coerce model) (coerce <$> asts)
 
 -- | Run a evaluation function on a 'Traversable' data structure of '(AST s)'s
 -- (e.g. @[(AST s)]@, @Vector (AST s)@, @Maybe (AST s)@, etc).
@@ -1795,7 +1779,7 @@ evalT model asts = (fmap . fmap . fmap) coerce . Z3 . ReaderT $ \ (Z3Env {..}) -
 -- This a generic version of 'evalT' which can be used in combination with
 -- other helpers. For instance, @mapEval evalInt@ can be used to obtain
 -- the 'Integer' interpretation of a list of '(AST s)' of sort /int/.
-mapEval :: (Traversable t) => EvalAst Z3 s a
+mapEval :: (Traversable t) => EvalAst s a
                            -> Model s
                            -> t (AST s)
                            -> Z3 s (Maybe (t a))
@@ -1928,7 +1912,7 @@ getParserError = liftF0 Base.getParserError
 
 -- | Return Z3 version number information.
 getVersion :: Z3 s Version
-getVersion = Z3 . lift . unsafeIOToST $ Base.getVersion
+getVersion = lift . unsafeIOToST $ Base.getVersion
 
 ---------------------------------------------------------------------
 -- Fixedpoint
