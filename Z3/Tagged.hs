@@ -372,6 +372,7 @@ module Z3.Tagged
   , check
   , checkAssumptions
   , solverCheckAndGetModel
+  , solverCheckAssumptionsAndGetModel
   , getModel
   , withModel
   , getUnsatCore
@@ -396,6 +397,7 @@ import Z3.Base
 
 import qualified Z3.Base as Base
 
+import Control.Monad ((>=>))
 import Control.Monad.ST
 import Control.Monad.ST.Unsafe
 import Control.Monad.Trans.Class ( lift )
@@ -2095,6 +2097,12 @@ checkAssumptions = solverCheckAssumptions
 
 solverCheckAndGetModel :: Z3 s (Result, Maybe (Model s))
 solverCheckAndGetModel = liftSolver0 Base.solverCheckAndGetModel
+
+solverCheckAssumptionsAndGetModel :: [AST s] -> Z3 s (Maybe (Either [AST s] (Model s)))
+solverCheckAssumptionsAndGetModel = checkAssumptions >=> \ case
+    Undef -> pure Nothing
+    Unsat -> Just . Left  <$> getUnsatCore
+    Sat   -> Just . Right <$> solverGetModel
 
 -- | Get model.
 --
