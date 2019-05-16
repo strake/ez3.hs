@@ -13,7 +13,6 @@ module Z3.Tagged
     -- ** Z3 enviroments
   , Z3Env
   , newEnv
-  , newItpEnv
 
   -- * Types
   , Symbol
@@ -320,7 +319,6 @@ module Z3.Tagged
   -- * Parser interface
   , parseSMTLib2String
   , parseSMTLib2File
-  , getParserError
 
   -- * Error Handling
   , Base.Z3Error(..)
@@ -340,17 +338,6 @@ module Z3.Tagged
   , fixedpointQueryRelations
   , fixedpointGetAnswer
   , fixedpointGetAssertions
-
-  -- * Interpolation
-  , Base.InterpolationProblem(..)
-  , mkInterpolant
-  , Base.mkInterpolationContext
-  , getInterpolant
-  , computeInterpolant
-  , readInterpolationProblem
-  , checkInterpolant
-  , interpolationProfile
-  , writeInterpolationProblem
 
   -- * Solvers
   , solverGetHelp
@@ -492,9 +479,6 @@ newEnvWith mkContext mbLogic opts =
 -- | Create a new Z3 environment.
 newEnv :: Maybe Logic -> Opts -> ST s (Z3Env s)
 newEnv = newEnvWith Base.mkContext
-
-newItpEnv :: Maybe Logic -> Opts -> ST s (Z3Env s)
-newItpEnv = newEnvWith Base.mkInterpolationContext
 
 ---------------------------------------------------------------------
 -- * Parameters
@@ -1906,9 +1890,6 @@ parseSMTLib2File ::
                  -> Z3 s (AST s)
 parseSMTLib2File = liftF5 Base.parseSMTLib2File
 
-getParserError :: Z3 s String
-getParserError = liftF0 Base.getParserError
-
 ---------------------------------------------------------------------
 -- Miscellaneous
 
@@ -1942,31 +1923,6 @@ fixedpointGetAnswer = liftFixedpoint0 Base.fixedpointGetAnswer
 
 fixedpointGetAssertions :: Z3 s [AST s]
 fixedpointGetAssertions = liftFixedpoint0 Base.fixedpointGetAssertions
-
----------------------------------------------------------------------
--- * Interpolation
-
-mkInterpolant :: AST s -> Z3 s (AST s)
-mkInterpolant = liftF1 Base.mkInterpolant
-
-getInterpolant :: AST s -> AST s -> Params s -> Z3 s [AST s]
-getInterpolant = liftF3 Base.getInterpolant
-
-computeInterpolant :: AST s -> Params s
-                   -> Z3 s (Maybe (Either (Model s) [AST s]))
-computeInterpolant = liftF2 Base.computeInterpolant
-
-readInterpolationProblem :: FilePath -> Z3 s (Either String Base.InterpolationProblem)
-readInterpolationProblem = liftF1 Base.readInterpolationProblem
-
-checkInterpolant :: Base.InterpolationProblem -> [AST s] -> Z3 s (Result, Maybe String)
-checkInterpolant = liftF2 Base.checkInterpolant
-
-interpolationProfile :: Z3 s String
-interpolationProfile = liftF0 Base.interpolationProfile
-
-writeInterpolationProblem :: FilePath -> Base.InterpolationProblem -> Z3 s ()
-writeInterpolationProblem = liftF2 Base.writeInterpolationProblem
 
 ---------------------------------------------------------------------
 -- * Solvers
