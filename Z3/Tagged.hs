@@ -740,7 +740,7 @@ mkEq = liftF2 Base.mkEq
 --
 -- Reference: <http://research.microsoft.com/en-us/um/redmond/projects/Z3 s/group__capi.html#gaa076d3a668e0ec97d61744403153ecf7>
 mkDistinct :: NonEmpty (AST s) -> Z3 s (AST s)
-mkDistinct = liftF1 Base.mkDistinct
+mkDistinct = liftF1 Base.mkDistinct1
 
 -- | Create an (AST s) node representing /not(a)/.
 --
@@ -810,7 +810,7 @@ mkMul = liftF1 Base.mkMul
 --
 -- Reference: <http://research.microsoft.com/en-us/um/redmond/projects/Z3 s/group__capi.html#ga4f5fea9b683f9e674fd8f14d676cc9a9>
 mkSub :: NonEmpty (AST s) -> Z3 s (AST s)
-mkSub = liftF1 Base.mkSub
+mkSub = liftF1 Base.mkSub1
 
 -- | Create an (AST s) node representing -arg.
 --
