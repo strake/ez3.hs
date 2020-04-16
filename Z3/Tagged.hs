@@ -330,8 +330,6 @@ module Z3.Tagged
 
   -- * Fixedpoint
   , Fixedpoint
-  , fixedpointPush
-  , fixedpointPop
   , fixedpointAddRule
   , fixedpointSetParams
   , fixedpointRegisterRelation
@@ -1899,12 +1897,6 @@ getVersion = lift . unsafeIOToST $ Base.getVersion
 
 ---------------------------------------------------------------------
 -- Fixedpoint
-
-fixedpointPush :: Z3 s ()
-fixedpointPush = liftFixedpoint0 Base.fixedpointPush
-
-fixedpointPop :: Z3 s ()
-fixedpointPop = liftFixedpoint0 Base.fixedpointPush
 
 fixedpointAddRule :: AST s -> Symbol s -> Z3 s ()
 fixedpointAddRule = liftFixedpoint2 Base.fixedpointAddRule
